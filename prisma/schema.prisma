@@ -1,0 +1,151 @@
+// ==========================
+// Configuração do Prisma Client
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Fonte de dados
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+// ==========================
+// Entidade: Usuario
+// Finalidade: Representa todos os usuários do sistema (médicos, pacientes, farmacêuticos, administradores)
+model Usuario {
+  id                   String           @id @default(cuid())
+  nome                 String
+  cpf                  String           @unique
+  email                String?
+  senhaHash            String
+
+  // 🔔 Token de notificação push (FCM)
+  tokenFCM             String?
+
+  // Relacionamentos
+  perfis               PerfilUsuario[]
+  alarmesCriados       Alarme[]         @relation("UsuarioAlarmes")
+  entregasFeitas       Entrega[]        @relation("UsuarioEntregas")
+  prescricoesMedicas   Prescricao[]     @relation("PrescricoesMedico")    // Médicos que criaram prescrições
+  prescricoesRecebidas Prescricao[]     @relation("PrescricoesPaciente")  // Pacientes que receberam prescrições
+
+  criadoEm             DateTime         @default(now())
+  atualizadoEm         DateTime         @updatedAt
+}
+
+// ==========================
+// Entidade: PerfilUsuario
+// Finalidade: Define o tipo de perfil (médico, paciente, farmacêutico, admin)
+model PerfilUsuario {
+  id                String       @id @default(cuid())
+  usuarioId         String
+  usuario           Usuario      @relation(fields: [usuarioId], references: [id])
+  tipo              PerfilTipo
+
+  crm               String?
+  crf               String?
+  aprovado          Boolean?
+  pendenteAprovacao Boolean?
+
+  criadoEm          DateTime     @default(now())
+  atualizadoEm      DateTime     @updatedAt
+}
+
+// ==========================
+// Enum: Tipos possíveis de perfil
+enum PerfilTipo {
+  medico
+  paciente
+  farmaceutico
+  admin
+}
+
+// ==========================
+// Entidade: Prescricao
+// Finalidade: Armazena os dados de uma prescrição médica
+// Base legal: Portaria SVS/MS 344/1998, RDC 20/2011
+model Prescricao {
+  id                 String           @id @default(cuid())
+  pacienteId         String
+  medicoId           String
+
+  paciente           Usuario          @relation("PrescricoesPaciente", fields: [pacienteId], references: [id])
+  medico             Usuario          @relation("PrescricoesMedico", fields: [medicoId], references: [id])
+
+  medicamento        String
+  dosagem            String
+  frequencia         String
+  duracao            String
+  observacoes        String?
+
+  tipoMedicamento    TipoMedicamento
+  tipoReceituario    String?
+  numeroNotificacao  String?
+  validadeReceita    DateTime?
+  quantidadeVias     Int?
+  assinaturaDigital  Boolean?
+
+  alarmes            Alarme[]
+  entregas           Entrega[]
+
+  criadoEm           DateTime         @default(now())
+  atualizadoEm       DateTime         @updatedAt
+}
+
+// ==========================
+// Enum: Tipo de Medicamento
+enum TipoMedicamento {
+  comum
+  antibiotico
+  controlado
+}
+
+// ==========================
+// Entidade: Alarme
+// Finalidade: Armazena configurações reais de alarmes de medicação
+// Tecnologias: Prisma ORM + integração futura com LocalStorage e FCM
+model Alarme {
+  id               String     @id @default(cuid())
+  prescricaoId     String
+  prescricao       Prescricao @relation(fields: [prescricaoId], references: [id])
+
+  horarioInicial   String                     // Ex: "08:00" (formato 24h)
+  frequenciaDiaria Int                         // Ex: 2 → 2 vezes por dia
+  duracaoDias      Int                         // Ex: 3 → repetir por 3 dias
+
+  criadoPorId      String
+  criadoPor        Usuario    @relation("UsuarioAlarmes", fields: [criadoPorId], references: [id])
+
+  criadoEm         DateTime   @default(now())
+  atualizadoEm     DateTime   @updatedAt
+}
+
+// ==========================
+// Entidade: Entrega
+// Finalidade: Registra a entrega de medicamentos na farmácia
+model Entrega {
+  id             String     @id @default(cuid())
+  prescricaoId   String
+  prescricao     Prescricao @relation(fields: [prescricaoId], references: [id])
+
+  farmaceuticoId String
+  farmaceutico   Usuario    @relation("UsuarioEntregas", fields: [farmaceuticoId], references: [id])
+
+  dataEntrega    DateTime
+  criadoEm       DateTime   @default(now())
+  atualizadoEm   DateTime   @updatedAt
+}
+
+// ==========================
+// Entidade: Medicamento (Futura)
+// Finalidade: Cadastro básico de medicamentos
+model Medicamento {
+  id             String    @id @default(cuid())
+  nome           String
+  principioAtivo String
+  interacoes     String?
+
+  criadoEm       DateTime  @default(now())
+  atualizadoEm   DateTime  @updatedAt
+}
