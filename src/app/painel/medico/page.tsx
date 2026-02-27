@@ -19,13 +19,6 @@ import Save from "@/imagens/salvar.svg";
 import PrescricoesCinza from "@/imagens/prescricoesCinza.svg";
 import HistoricoCinza from "@/imagens/historicoCinza.svg";
 
-/**
- * Página: Painel do Médico
- * Tecnologias: Next.js, Tailwind CSS, fetch API, SSE
- * Finalidade: visualizar e gerenciar prescrições, com busca de pacientes,
- * histórico e criação de novas prescrições.
- */
-
 type Paciente = {
   id: string;
   nome: string;
@@ -50,7 +43,6 @@ type Prescricao = {
 export default function PainelMedico() {
   const router = useRouter();
 
-  // ====== ESTADOS GLOBAIS ======
   const [prescricoes, setPrescricoes] = useState<Prescricao[]>([]);
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [historicoPaciente, setHistoricoPaciente] = useState<Prescricao[]>([]);
@@ -78,14 +70,12 @@ export default function PainelMedico() {
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
   const [loading, setLoading] = useState(false);
-  // ====== FIM ESTADOS ======
 
-  // Carrega prescrições do médico ao abrir a página
   useEffect(() => {
     async function carregarPrescricoes() {
       try {
-        const token = localStorage.getItem("token");
-        const perfilAtivo = localStorage.getItem("perfilAtivo");
+        const token = sessionStorage.getItem("token");
+        const perfilAtivo = sessionStorage.getItem("perfilAtivo");
         if (perfilAtivo !== "medico") {
           router.push("/selecionar-perfil");
           return;
@@ -103,7 +93,6 @@ export default function PainelMedico() {
     carregarPrescricoes();
   }, [router]);
 
-  // SSE – novas prescrições em tempo real
   useEffect(() => {
     let eventSource: EventSource | null = null;
 
@@ -135,12 +124,11 @@ export default function PainelMedico() {
     return () => eventSource?.close();
   }, [secaoAtiva]);
 
-  // Busca inicial de pacientes ao entrar em "buscar"
   useEffect(() => {
     async function buscarPacientesIniciais() {
       if (secaoAtiva !== "buscar") return;
       try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
         const response = await fetch("/api/eventos/pacientes/buscar", {
           method: "POST",
           headers: {
@@ -158,12 +146,11 @@ export default function PainelMedico() {
     buscarPacientesIniciais();
   }, [secaoAtiva]);
 
-  // Carrega histórico do paciente selecionado
   useEffect(() => {
     async function carregarHistorico() {
       if (secaoAtiva !== "historico" || !pacienteSelecionado) return;
       try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
         const url = `/api/prescricoes/listar?pacienteId=${pacienteSelecionado.id}`;
         const response = await fetch(url, {
           headers: { Authorization: `Bearer ${token}` },
@@ -182,12 +169,11 @@ export default function PainelMedico() {
     carregarHistorico();
   }, [secaoAtiva, pacienteSelecionado]);
 
-  // Sincroniza prescrições ao abrir seção "prescricoes"
   useEffect(() => {
     async function sincronizarPrescricoes() {
       if (secaoAtiva !== "prescricoes") return;
       try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
         const response = await fetch("/api/prescricoes/listar", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -200,7 +186,6 @@ export default function PainelMedico() {
     sincronizarPrescricoes();
   }, [secaoAtiva]);
 
-  // Mantém pacienteId sincronizado ao escolher paciente
   useEffect(() => {
     if (pacienteSelecionado?.id) {
       setPacienteId(pacienteSelecionado.id);
@@ -210,10 +195,9 @@ export default function PainelMedico() {
   const pacientesFiltrados = pacientes.filter(
     (p) =>
       p?.nome?.toLowerCase().includes(termoBusca.toLowerCase()) ||
-      p?.cpf?.includes(termoBusca)
+      p?.cpf?.includes(termoBusca),
   );
 
-  // Criação de nova prescrição
   const handleCriarPrescricao = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErro("");
@@ -229,8 +213,8 @@ export default function PainelMedico() {
     }
 
     try {
-      const token = localStorage.getItem("token") || "";
-      const medicoId = localStorage.getItem("usuarioId") || "";
+      const token = sessionStorage.getItem("token") || "";
+      const medicoId = sessionStorage.etItem("usuarioId") || "";
 
       const resp = await fetch("/api/prescricoes/criar", {
         method: "POST",
@@ -278,7 +262,6 @@ export default function PainelMedico() {
     }
   };
 
-  // ====== RENDER ======
   return (
     <div className="bg-[#F0F0F5] flex flex-col min-h-screen w-full">
       <Topbar />
@@ -378,7 +361,7 @@ export default function PainelMedico() {
                         medicamento={p.medicamento}
                         data={new Date(p.criadoEm).toLocaleDateString()}
                         feitoPorMim={
-                          p.medico?.id === localStorage.getItem("usuarioId")
+                          p.medico?.id === sessionStorage.getItem("usuarioId")
                         }
                         onVerPrescricao={() => {
                           setOrigemPrescricao("historico");
@@ -424,7 +407,7 @@ export default function PainelMedico() {
               observacoes={prescricaoSelecionada.observacoes || ""}
               tipoMedicamento={prescricaoSelecionada.tipoMedicamento || "comum"}
               criadoEm={new Date(
-                prescricaoSelecionada.criadoEm
+                prescricaoSelecionada.criadoEm,
               ).toLocaleDateString()}
               perfilUsuario="medico"
               onVoltar={() => {

@@ -18,24 +18,16 @@ interface SidebarProps {
   onNavigate?: (secao: string) => void;
 }
 
-/**
- * Componente Sidebar.
- * Tecnologias: Next.js (App Router), Tailwind CSS.
- * Por que existe:
- *  Exibir a navegação lateral do painel,
- *  adaptando os itens conforme o perfil ativo.
- */
 export default function Sidebar({ perfil, onNavigate }: SidebarProps) {
   const router = useRouter();
 
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [perfilUsuario, setPerfilUsuario] = useState("");
 
-  // Carrega dados do usuário logado
   useEffect(() => {
     async function carregarDadosUsuario() {
       try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
         const response = await fetch("/api/usuarios/logado", {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -55,20 +47,22 @@ export default function Sidebar({ perfil, onNavigate }: SidebarProps) {
     carregarDadosUsuario();
   }, []);
 
-  // SPA ou navegação normal
   const navegar = (path: string) => {
     if (onNavigate) onNavigate(path);
     else router.push(path);
   };
 
-  // Itens do menu por perfil
   const itensMenu = () => {
     switch (perfil) {
       case "medico":
         return [
           { label: "Início", path: "inicio", icon: Home },
           { label: "Buscar Paciente", path: "buscar", icon: Lupa },
-          { label: "Minhas Prescrições", path: "prescricoes", icon: Prescricoes },
+          {
+            label: "Minhas Prescrições",
+            path: "prescricoes",
+            icon: Prescricoes,
+          },
         ];
       case "farmaceutico":
         return [
@@ -78,7 +72,11 @@ export default function Sidebar({ perfil, onNavigate }: SidebarProps) {
       case "paciente":
         return [
           { label: "Início", path: "inicio", icon: Home },
-          { label: "Minhas Prescrições", path: "prescricoes", icon: Prescricoes },
+          {
+            label: "Minhas Prescrições",
+            path: "prescricoes",
+            icon: Prescricoes,
+          },
         ];
       case "admin":
         return [
@@ -93,7 +91,6 @@ export default function Sidebar({ perfil, onNavigate }: SidebarProps) {
 
   return (
     <aside className="flex flex-col w-full lg:w-[338px] lg:min-h-[calc(100vh-100px)] bg-white shadow lg:flex-shrink-0">
-
       {/* Área superior com avatar + nome */}
       <div className="flex flex-row items-center py-4 ">
         <div className="flex flex-row ml-4 gap-3">
@@ -117,7 +114,6 @@ export default function Sidebar({ perfil, onNavigate }: SidebarProps) {
 
       {/* Menu lateral */}
       <nav className="flex-1 p-4 flex flex-col justify-between">
-
         <div>
           {itensMenu().map((item) => (
             <button

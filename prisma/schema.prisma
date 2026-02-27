@@ -19,24 +19,18 @@ model Usuario {
   cpf                  String           @unique
   email                String?
   senhaHash            String
-
-  // 🔔 Token de notificação push (FCM)
   tokenFCM             String?
-
-  // Relacionamentos
   perfis               PerfilUsuario[]
   alarmesCriados       Alarme[]         @relation("UsuarioAlarmes")
   entregasFeitas       Entrega[]        @relation("UsuarioEntregas")
-  prescricoesMedicas   Prescricao[]     @relation("PrescricoesMedico")    // Médicos que criaram prescrições
-  prescricoesRecebidas Prescricao[]     @relation("PrescricoesPaciente")  // Pacientes que receberam prescrições
+  prescricoesMedicas   Prescricao[]     @relation("PrescricoesMedico")    
+  prescricoesRecebidas Prescricao[]     @relation("PrescricoesPaciente")  
 
   criadoEm             DateTime         @default(now())
   atualizadoEm         DateTime         @updatedAt
 }
 
-// ==========================
-// Entidade: PerfilUsuario
-// Finalidade: Define o tipo de perfil (médico, paciente, farmacêutico, admin)
+
 model PerfilUsuario {
   id                String       @id @default(cuid())
   usuarioId         String
@@ -52,8 +46,6 @@ model PerfilUsuario {
   atualizadoEm      DateTime     @updatedAt
 }
 
-// ==========================
-// Enum: Tipos possíveis de perfil
 enum PerfilTipo {
   medico
   paciente
@@ -61,10 +53,6 @@ enum PerfilTipo {
   admin
 }
 
-// ==========================
-// Entidade: Prescricao
-// Finalidade: Armazena os dados de uma prescrição médica
-// Base legal: Portaria SVS/MS 344/1998, RDC 20/2011
 model Prescricao {
   id                 String           @id @default(cuid())
   pacienteId         String
@@ -93,26 +81,20 @@ model Prescricao {
   atualizadoEm       DateTime         @updatedAt
 }
 
-// ==========================
-// Enum: Tipo de Medicamento
 enum TipoMedicamento {
   comum
   antibiotico
   controlado
 }
 
-// ==========================
-// Entidade: Alarme
-// Finalidade: Armazena configurações reais de alarmes de medicação
-// Tecnologias: Prisma ORM + integração futura com LocalStorage e FCM
 model Alarme {
   id               String     @id @default(cuid())
   prescricaoId     String
   prescricao       Prescricao @relation(fields: [prescricaoId], references: [id])
 
-  horarioInicial   String                     // Ex: "08:00" (formato 24h)
-  frequenciaDiaria Int                         // Ex: 2 → 2 vezes por dia
-  duracaoDias      Int                         // Ex: 3 → repetir por 3 dias
+  horarioInicial   String                     
+  frequenciaDiaria Int                         
+  duracaoDias      Int                         
 
   criadoPorId      String
   criadoPor        Usuario    @relation("UsuarioAlarmes", fields: [criadoPorId], references: [id])
@@ -121,9 +103,6 @@ model Alarme {
   atualizadoEm     DateTime   @updatedAt
 }
 
-// ==========================
-// Entidade: Entrega
-// Finalidade: Registra a entrega de medicamentos na farmácia
 model Entrega {
   id             String     @id @default(cuid())
   prescricaoId   String
@@ -137,9 +116,6 @@ model Entrega {
   atualizadoEm   DateTime   @updatedAt
 }
 
-// ==========================
-// Entidade: Medicamento (Futura)
-// Finalidade: Cadastro básico de medicamentos
 model Medicamento {
   id             String    @id @default(cuid())
   nome           String

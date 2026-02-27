@@ -18,13 +18,6 @@ interface DetalhePrescricaoProps {
   onVoltar: () => void;
 }
 
-/**
- * Componente DetalhePrescricao.
- * Tecnologias: React, Tailwind CSS.
- * Por que existe:
- * Exibir detalhes completos de uma prescrição de forma organizada,
- * com blocos visuais claros e botão de retorno.
- */
 export default function DetalhePrescricao({
   pacienteNome,
   medicamento,

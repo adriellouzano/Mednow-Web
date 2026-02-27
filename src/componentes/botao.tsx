@@ -3,9 +3,6 @@
 import { ReactNode } from "react";
 import clsx from "clsx";
 
-/**
- * Botão padronizado 
- */
 export default function Botao({
   children,
   onClick,
@@ -42,15 +39,12 @@ export default function Botao({
 
       // ===== VARIANTES =====
 
-      "bg-[#0060B1] text-white hover:bg-[#004d8e]":
-        variante === "primario",
+      "bg-[#0060B1] text-white hover:bg-[#004d8e]": variante === "primario",
 
-      "bg-gray-200 text-gray-800 hover:bg-gray-300":
-        variante === "secundario",
+      "bg-gray-200 text-gray-800 hover:bg-gray-300": variante === "secundario",
 
-      "bg-red-100 text-red-600 hover:bg-red-200":
-        variante === "perigo",
-    }
+      "bg-red-100 text-red-600 hover:bg-red-200": variante === "perigo",
+    },
   );
 
   return (

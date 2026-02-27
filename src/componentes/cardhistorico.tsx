@@ -10,10 +10,6 @@ interface CardHistoricoProps {
   onVerPrescricao: () => void;
 }
 
-/**
- * Card de histórico 
-
- */
 export default function CardHistorico({
   medicamento,
   data,

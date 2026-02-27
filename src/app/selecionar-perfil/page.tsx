@@ -1,69 +1,51 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-/**
- * Página de Seleção de Perfil.
- * Tecnologias: Next.js (App Router), JWT, Tailwind CSS.
- * Por que existe: permitir que o usuário escolha o perfil ativo
- * após o login real autenticado.
- */
 export default function SelecionarPerfil() {
-  const router = useRouter()
+  const router = useRouter();
 
-  // ====== INÍCIO: Estados globais ======
-  const [perfis, setPerfis] = useState<string[]>([])
-  const [usuarioNome, setUsuarioNome] = useState("")
-  const [erro, setErro] = useState("")
-  // ====== FIM: Estados globais ======
+  const [perfis, setPerfis] = useState<string[]>([]);
+  const [usuarioNome, setUsuarioNome] = useState("");
+  const [erro, setErro] = useState("");
 
-  /**
-   * Ao carregar:
-   * - Lê perfis e nome do usuário do localStorage.
-   * - Volta ao login se os dados não existirem.
-   */
   useEffect(() => {
     try {
-      const perfisSalvos = localStorage.getItem("perfis")
-      const nomeSalvo = localStorage.getItem("usuarioNome")
+      const perfisSalvos = localStorage.getItem("perfis");
+      const nomeSalvo = localStorage.getItem("usuarioNome");
 
       if (!perfisSalvos) {
-        router.push("/login")
-        return
+        router.push("/login");
+        return;
       }
 
-      const parsed = JSON.parse(perfisSalvos)
-      setPerfis(parsed.map((p: { tipo: string }) => p.tipo))
-      setUsuarioNome(nomeSalvo || "")
+      const parsed = JSON.parse(perfisSalvos);
+      setPerfis(parsed.map((p: { tipo: string }) => p.tipo));
+      setUsuarioNome(nomeSalvo || "");
     } catch (error) {
-      console.error("Erro ao carregar perfis:", error)
-      setErro("Falha ao carregar perfis.")
+      console.error("Erro ao carregar perfis:", error);
+      setErro("Falha ao carregar perfis.");
     }
-  }, [router])
+  }, [router]);
 
-  /**
-   * Define o perfil ativo e redireciona para o painel.
-   */
   const selecionarPerfil = (perfil: string) => {
-    localStorage.setItem("perfilAtivo", perfil)
-    router.push(`/painel/${perfil}`)
-  }
+    localStorage.setItem("perfilAtivo", perfil);
+    router.push(`/painel/${perfil}`);
+  };
 
-  /**
-   * Logout completo — limpa sessão e volta ao login.
-   */
   const sair = () => {
-    localStorage.clear()
-    router.push("/login")
-  }
+    localStorage.clear();
+    router.push("/login");
+  };
 
   return (
-    // ====== INÍCIO: Estrutura principal ======
     <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-4">
       {/* ====== Container central ====== */}
       <div className="w-full max-w-md bg-white p-8 rounded shadow text-center space-y-5">
-        <h1 className="text-2xl font-bold text-blue-600">Selecione seu perfil</h1>
+        <h1 className="text-2xl font-bold text-blue-600">
+          Selecione seu perfil
+        </h1>
 
         {usuarioNome && (
           <p className="text-gray-700">
@@ -107,6 +89,5 @@ export default function SelecionarPerfil() {
         </div>
       </div>
     </main>
-    // ====== FIM: Estrutura principal ======
-  )
+  );
 }

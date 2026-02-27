@@ -50,27 +50,24 @@ export default function LoginPage() {
       }
 
       // ====== Salvando informações da sessão ======
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("usuarioId", data.usuario.id);
-      localStorage.setItem("usuarioNome", data.usuario.nome);
-      localStorage.setItem("perfis", JSON.stringify(data.usuario.perfis));
+      sessionStorage.setItem("token", data.token);
+      sessionStorage.setItem("usuarioId", data.usuario.id);
+      sessionStorage.setItem("usuarioNome", data.usuario.nome);
+      sessionStorage.setItem("perfis", JSON.stringify(data.usuario.perfis));
 
       // ====== Redirecionamento dinâmico ======
       const perfis = data.usuario.perfis;
 
       if (perfis.length === 1) {
         const unico = perfis[0].tipo;
-        localStorage.setItem("perfilAtivo", unico);
+        sessionStorage.setItem("perfilAtivo", unico);
         router.push(`/painel/${unico}`);
       } else {
         router.push("/selecionar-perfil");
       }
-
     } catch (error) {
       console.error("Erro inesperado:", error);
-      setErro(
-        "Erro inesperado. Verifique sua conexão e tente novamente."
-      );
+      setErro("Erro inesperado. Verifique sua conexão e tente novamente.");
     } finally {
       setLoading(false);
     }
@@ -81,7 +78,6 @@ export default function LoginPage() {
     <main className="min-h-[calc(100vh-100px)] w-full bg-[#F0F0F5] flex items-center justify-center p-4">
       <form onSubmit={handleLogin} className="w-full">
         <div className="flex flex-col lg:flex-row justify-center items-center lg:items-start w-full gap-5">
-
           {/* ====== CARD PRINCIPAL DE LOGIN ====== */}
           <div className="h-auto bg-[#FFFFFF] rounded shadow w-full max-w-lg overflow-hidden">
             <div className="flex h-[121px] justify-center items-center">
@@ -158,7 +154,6 @@ export default function LoginPage() {
               </p>
             </div>
           </div>
-
         </div>
 
         {/* Ícone decorativo inferior */}

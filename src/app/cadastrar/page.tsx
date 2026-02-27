@@ -68,9 +68,7 @@ export default function CadastroPage() {
 
     async function buscarCPF() {
       try {
-        const resp = await fetch(
-          `/api/usuarios/consultar-cpf?cpf=${cpfLimpo}`
-        );
+        const resp = await fetch(`/api/usuarios/consultar-cpf?cpf=${cpfLimpo}`);
 
         const data = await resp.json();
 
@@ -92,14 +90,12 @@ export default function CadastroPage() {
         setNome(data.usuario.nome);
         setEmail(data.usuario.email);
 
-        const perfis = data.usuario.perfis.map(
-          (p: PerfilResponse) => p.tipo
-        );
+        const perfis = data.usuario.perfis.map((p: PerfilResponse) => p.tipo);
         setPerfisExistentes(perfis);
 
         // perfis que ainda podem ser criados
         const disponiveis = ["paciente", "medico", "farmaceutico"].filter(
-          (p) => !perfis.includes(p)
+          (p) => !perfis.includes(p),
         );
 
         setPerfisDisponiveis(disponiveis);
@@ -202,11 +198,10 @@ export default function CadastroPage() {
   // ============================================
   const nomeComErro = tentouEnviar && !nome.trim();
   const emailComErro = tentouEnviar && !email.trim();
-  const senhaComErro =
-    tentouEnviar && !cpfExiste && !senha.trim();
+  const senhaComErro = tentouEnviar && !cpfExiste && !senha.trim();
   const cpfLimpoLen = cpf.replace(/[^\d]/g, "").length;
   const cpfComErro =
-    (cpfInvalido || (tentouEnviar && cpfLimpoLen !== 11 && cpfLimpoLen !== 0));
+    cpfInvalido || (tentouEnviar && cpfLimpoLen !== 11 && cpfLimpoLen !== 0);
 
   const crmComErro =
     perfilSelecionado === "medico" &&
@@ -232,7 +227,8 @@ export default function CadastroPage() {
               CPF encontrado!
             </p>
             <p className="mt-1">
-              Os dados foram preenchidos automaticamente. Se não for você, altere o CPF.
+              Os dados foram preenchidos automaticamente. Se não for você,
+              altere o CPF.
             </p>
           </div>
         )}
@@ -287,9 +283,7 @@ export default function CadastroPage() {
                   const novoCpf = formatarCpf(e.target.value);
                   setCpf(novoCpf);
                   const limpo = novoCpf.replace(/[^\d]/g, "");
-                  setCpfInvalido(
-                    limpo.length > 0 && limpo.length !== 11
-                  );
+                  setCpfInvalido(limpo.length > 0 && limpo.length !== 11);
                 }}
                 className={`w-full h-[49px] border px-4 text-xl rounded-[5px]
                            font-light focus:outline-none focus:ring-2 ${
@@ -386,9 +380,7 @@ export default function CadastroPage() {
                   onChange={(e) => {
                     const valor = e.target.value.toUpperCase();
                     setCrm(valor);
-                    setCrmInvalido(
-                      valor.length > 0 && !validarCRM(valor)
-                    );
+                    setCrmInvalido(valor.length > 0 && !validarCRM(valor));
                   }}
                   className={`w-full max-w-xs h-[49px] border px-4 text-xl rounded-[5px]
                            font-light focus:outline-none focus:ring-2 ${
@@ -415,9 +407,7 @@ export default function CadastroPage() {
                   onChange={(e) => {
                     const valor = e.target.value.toUpperCase();
                     setCrf(valor);
-                    setCrfInvalido(
-                      valor.length > 0 && !validarCRF(valor)
-                    );
+                    setCrfInvalido(valor.length > 0 && !validarCRF(valor));
                   }}
                   className={`w-full max-w-xs h-[49px] border px-4 text-xl rounded-[5px]
                            font-light focus:outline-none focus:ring-2 ${

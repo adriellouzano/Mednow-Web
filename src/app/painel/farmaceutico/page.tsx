@@ -14,14 +14,6 @@ import Image from "next/image";
 import PrescricoesCinza from "@/imagens/prescricoesCinza.svg";
 import Voltar from "@/imagens/voltar.svg";
 
-/**
- * =============================================
- * Painel do Farmacêutico — Sistema MedNow (A + design B)
- * =============================================
- * ✔ Usa o design, layout e UX
- * =============================================
- */
-
 type Prescricao = {
   id: string;
   medicamento: string;
@@ -47,7 +39,6 @@ type Paciente = {
 };
 
 export default function PainelFarmaceutico() {
-  // ====== ESTADOS GLOBAIS ======
   const [pacientes, setPacientes] = useState<Paciente[]>([]);
   const [prescricoes, setPrescricoes] = useState<Prescricao[]>([]);
   const [pacienteSelecionado, setPacienteSelecionado] =
@@ -60,7 +51,6 @@ export default function PainelFarmaceutico() {
 
   const [entregandoId, setEntregandoId] = useState<string | null>(null);
 
-  // 🔔 Estados do Modal
   const [modalAberto, setModalAberto] = useState(false);
   const [prescricaoSelecionada, setPrescricaoSelecionada] = useState<
     string | null
@@ -69,8 +59,6 @@ export default function PainelFarmaceutico() {
   const [prescricaoVisualizada, setPrescricaoVisualizada] =
     useState<Prescricao | null>(null);
 
-  // ================================
-  // 🔎 Buscar pacientes automaticamente (MESMA LÓGICA DO A)
   useEffect(() => {
     async function carregarPacientes() {
       if (secaoAtiva !== "buscar") return;
@@ -78,7 +66,7 @@ export default function PainelFarmaceutico() {
       setLoading(true);
 
       try {
-        const token = localStorage.getItem("token");
+        const token = sessionStorage.getItem("token");
         const response = await fetch("/api/eventos/pacientes/buscar", {
           method: "POST",
           headers: {
@@ -104,8 +92,6 @@ export default function PainelFarmaceutico() {
     carregarPacientes();
   }, [secaoAtiva]);
 
-  // ================================
-  // 📋 Carregar prescrições por paciente (MESMA LÓGICA DO A)
   const carregarPrescricoesPaciente = async (paciente: Paciente) => {
     setPacienteSelecionado(paciente);
     setSecaoAtiva("prescricoes");
@@ -113,7 +99,7 @@ export default function PainelFarmaceutico() {
     setErro("");
 
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
       const url = `/api/prescricoes/listar?pacienteId=${paciente.id}`;
 
       const response = await fetch(url, {
@@ -126,7 +112,7 @@ export default function PainelFarmaceutico() {
 
       const ordenadas = (data.prescricoes || []).sort(
         (a: Prescricao, b: Prescricao) =>
-          new Date(b.criadoEm).getTime() - new Date(a.criadoEm).getTime()
+          new Date(b.criadoEm).getTime() - new Date(a.criadoEm).getTime(),
       );
 
       setPrescricoes(ordenadas);
@@ -138,14 +124,12 @@ export default function PainelFarmaceutico() {
     }
   };
 
-  // ================================
-  // 📦 Marcar prescrição como entregue (MESMA LÓGICA DO A)
   const marcarComoEntregue = async (prescricaoId: string) => {
     setEntregandoId(prescricaoId);
     setErro("");
 
     try {
-      const token = localStorage.getItem("token");
+      const token = sessionStorage.getItem("token");
 
       const response = await fetch("/api/entregas/registrar", {
         method: "POST",
@@ -169,15 +153,11 @@ export default function PainelFarmaceutico() {
     }
   };
 
-  // ================================
-  // ⏰ Abrir modal de alarme (MESMA LÓGICA DO A)
   const configurarAlarme = (prescricaoId: string) => {
     setPrescricaoSelecionada(prescricaoId);
     setModalAberto(true);
   };
 
-  // ================================
-  // 🔁 SSE — Novas prescrições (MESMA LÓGICA DO A)
   useEffect(() => {
     const eventSource = new EventSource("/api/prescricoes");
 
@@ -201,17 +181,12 @@ export default function PainelFarmaceutico() {
     return () => eventSource.close();
   }, [secaoAtiva, pacienteSelecionado]);
 
-  // ================================
-  // 🔍 Filtro local
   const pacientesFiltrados = pacientes.filter(
     (p) =>
       p?.nome?.toLowerCase().includes(termoBusca.toLowerCase()) ||
-      p?.cpf?.replace(/\D/g, "").includes(termoBusca.replace(/\D/g, ""))
+      p?.cpf?.replace(/\D/g, "").includes(termoBusca.replace(/\D/g, "")),
   );
 
-  // =====================================================
-  // RENDERIZAÇÃO COM O DESIGN DO B
-  // =====================================================
   return (
     <div className="bg-[#F0F0F5] flex flex-col min-h-screen w-full">
       <Topbar />
@@ -360,7 +335,7 @@ export default function PainelFarmaceutico() {
               observacoes={prescricaoVisualizada.observacoes || ""}
               tipoMedicamento={prescricaoVisualizada.tipoMedicamento || "comum"}
               criadoEm={new Date(
-                prescricaoVisualizada.criadoEm
+                prescricaoVisualizada.criadoEm,
               ).toLocaleDateString()}
               perfilUsuario="farmaceutico"
               onVoltar={() => setSecaoAtiva("prescricoes")}
@@ -384,8 +359,8 @@ export default function PainelFarmaceutico() {
           if (!prescricaoSelecionada) return;
 
           try {
-            const token = localStorage.getItem("token");
-            const criadoPorId = localStorage.getItem("usuarioId");
+            const token = sessionStorage.getItem("token");
+            const criadoPorId = sessionStorage.getItem("usuarioId");
 
             const response = await fetch("/api/alarmes/criar", {
               method: "POST",

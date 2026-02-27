@@ -1,13 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 
-/**
- * Rota GET /api/usuarios/consultar-cpf?cpf=12345678900
- * Finalidade:
- * - Verificar se o CPF já existe
- * - Retornar dados do usuário
- * - Retornar perfis já cadastrados
- */
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -16,7 +9,7 @@ export async function GET(req: Request) {
     if (!cpf) {
       return NextResponse.json(
         { error: "CPF é obrigatório." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -51,7 +44,7 @@ export async function GET(req: Request) {
 
     return NextResponse.json(
       { error: "Erro interno ao consultar CPF." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,23 +2,9 @@
 
 import { useState } from "react";
 
-/**
- * =============================================
- * ModalAlarmeFarmaceutico — Sistema MedNow
- * =============================================
- * 💡 Por que existe:
- *  Permite ao farmacêutico configurar alarmes reais
- *  com horário inicial (formato 24h), frequência diária
- *  e duração em dias.
- * =============================================
- */
-
 interface ModalAlarmeFarmaceuticoProps {
-  /** Exibe ou oculta o modal */
   aberto: boolean;
-  /** Fecha o modal (callback do pai) */
   onFechar: () => void;
-  /** Callback que retorna os dados validados */
   onConfirmar: (dados: {
     horarioInicial: string;
     frequenciaDiaria: number;
@@ -38,11 +24,9 @@ export default function ModalAlarmeFarmaceutico({
 
   if (!aberto) return null;
 
-  /** Valida e envia os dados ao componente pai */
   const handleSalvar = () => {
     setErro("");
 
-    // Validação do horário em formato 24h (HH:mm)
     const regexHora = /^([01]\d|2[0-3]):[0-5]\d$/;
     if (!regexHora.test(horarioInicial)) {
       setErro("Informe o horário no formato 24h (ex: 08:00 ou 16:30).");
@@ -54,7 +38,7 @@ export default function ModalAlarmeFarmaceutico({
 
     if (isNaN(freq) || freq <= 0 || freq > 24) {
       setErro(
-        "Frequência inválida. Digite o número de vezes por dia (1 a 24)."
+        "Frequência inválida. Digite o número de vezes por dia (1 a 24).",
       );
       return;
     }

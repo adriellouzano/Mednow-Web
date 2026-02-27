@@ -1,16 +1,12 @@
 export const metadata = {
-  title: "MedNow",
-  description: "",
+  title: "MedNow - Painel",
+  description: "Área administrativa",
 };
 
-export default function RootLayout({
+export default function PainelLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
-  );
+  return <main className="painel-wrapper">{children}</main>;
 }

@@ -7,19 +7,9 @@ import Link from "next/link";
 import IconeSair from "@/imagens/logout.svg";
 import Logo from "@/imagens/logo1.png";
 
-/**
- * Componente Topbar.
- * Tecnologias: Next.js (App Router), Tailwind CSS.
- * Por que existe: exibir o cabeçalho superior com logo e ações principais.
- */
 export default function Topbar() {
   const router = useRouter();
 
-  /**
-   * Função para sair do sistema:
-   * - Limpa o localStorage.
-   * - Redireciona para a página inicial.
-   */
   const sair = () => {
     localStorage.clear();
     router.push("/");

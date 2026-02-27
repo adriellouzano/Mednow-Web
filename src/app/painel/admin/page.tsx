@@ -11,11 +11,6 @@ import Close from "@/imagens/close.svg";
 import UserCinza from "@/imagens/user-cinza.svg";
 import NenhumAdicionado from "@/componentes/nenhumadicionado";
 
-/**
- * Painel do Administrador.
- * Responsável por aprovar/rejeitar perfis sensíveis (médicos e farmacêuticos)
- * e visualizar perfis aprovados e pendentes.
- */
 type Perfil = {
   id: string;
   tipo: "medico" | "farmaceutico";
@@ -30,7 +25,6 @@ type Perfil = {
 export default function PainelAdmin() {
   const router = useRouter();
 
-  // ====== Estados globais ======
   const [perfisPendentes, setPerfisPendentes] = useState<Perfil[]>([]);
   const [perfisAprovados, setPerfisAprovados] = useState<Perfil[]>([]);
   const [loading, setLoading] = useState(true);
@@ -38,12 +32,9 @@ export default function PainelAdmin() {
   const [sucesso, setSucesso] = useState("");
   const [secaoAtiva, setSecaoAtiva] = useState("inicio");
 
-  /**
-   * Verifica perfil ativo + carrega perfis do backend.
-   */
   useEffect(() => {
-    const perfilAtivo = localStorage.getItem("perfilAtivo");
-    const token = localStorage.getItem("token");
+    const perfilAtivo = sessionStorage.getItem("perfilAtivo");
+    const token = sessionStorage.getItem("token");
 
     if (!perfilAtivo || perfilAtivo !== "admin") {
       router.push("/selecionar-perfil");
@@ -86,14 +77,11 @@ export default function PainelAdmin() {
     }
   }, [router, secaoAtiva]);
 
-  /**
-   * Aprovar ou rejeitar perfil.
-   */
   const atualizarStatus = async (id: string, aprovar: boolean) => {
     setErro("");
     setSucesso("");
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     try {
       const response = await fetch("/api/perfis/aprovar", {
