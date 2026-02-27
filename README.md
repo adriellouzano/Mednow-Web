@@ -1,8 +1,5 @@
-# MedNow — Sistema Inteligente de Gestão e Monitoramento de Medicação
-
-\
-
----
+# MedNow — Plataforma Digital de Receituários Médicos
+<p align="center"> <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" /> <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" /> <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" /> <img src="https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white" /> <img src="https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white" /> <img src="https://img.shields.io/badge/TailwindCSS-38B2AC?style=for-the-badge&logo=tailwindcss&logoColor=white" />  </p>
 
 ## Sobre o Projeto
 
@@ -18,29 +15,25 @@ https://github.com/adriellouzano/Mednow---Mobile
 
 Uma versão funcional do sistema está disponível para testes:
 
-🔗 **Acessar aplicação:**
+ **Acessar aplicação:**
 https://mednow-one.vercel.app/login
 
 ###   Usuário de Demonstração
-```
-Admin
-CPF: 123.456.789-09
+
+Admin<br>
+CPF: 123.456.789-09<br>
 Senha: 123
-```
-```
-Médico
-CPF: 671.650.690-03
+
+Médico<br>
+CPF: 671.650.690-03<br>
 Senha: 123
-```
-```
-Farmacêutico
-CPF: 694.565.160-67
+
+Farmacêutico<br>
+CPF: 694.565.160-67<br>
 Senha: 123
-```
+
 
 ⚠️ Ambiente destinado apenas para demonstração acadêmica, utilizando dados fictícios.
-Algumas funcionalidades administrativas podem estar limitadas para segurança.
-
 ---
 
 ###  Funcionalidades
@@ -81,12 +74,10 @@ PostgreSQL Database
 - TypeScript
 - Prisma ORM
 - PostgreSQL
-- JWT (Autenticação)
-- Bcrypt (Hash de senhas)
+- JWT 
+- Bcrypt 
 - TailwindCSS
-- Firebase Admin (Notificações)
-- Node.js
-
+- Firebase 
 ---
 
 ##  Estrutura do Projeto
@@ -185,8 +176,6 @@ npm start
 - Senhas criptografadas com bcrypt
 - Variáveis sensíveis protegidas por environment variables
 - Separação entre código cliente e servidor
-
-⚠️ Dados reais de pacientes não devem ser utilizados em ambientes públicos.
 
 ---
 
